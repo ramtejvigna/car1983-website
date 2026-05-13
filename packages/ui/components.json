@@ -1,0 +1,19 @@
+{
+  "$schema": "https://ui.shadcn.com/schema.json",
+  "style": "default",
+  "rsc": true,
+  "tsx": true,
+  "tailwind": {
+    "config": "",
+    "css": "src/globals.css",
+    "baseColor": "neutral",
+    "cssVariables": true
+  },
+  "aliases": {
+    "components": "@car1983/ui/components",
+    "utils": "@car1983/ui/lib/utils",
+    "hooks": "@car1983/ui/hooks",
+    "lib": "@car1983/ui/lib",
+    "ui": "@car1983/ui/components"
+  }
+}

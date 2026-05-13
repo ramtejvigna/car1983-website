@@ -1,0 +1,12 @@
+{
+  "extends": "@car1983/config/tsconfig",
+  "compilerOptions": {
+    "outDir": "dist",
+    "paths": {
+      "@car1983/ui": ["./src/index.ts"],
+      "@car1983/ui/*": ["./src/*"]
+    }
+  },
+  "include": ["src"],
+  "exclude": ["node_modules", "dist"]
+}

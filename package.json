@@ -1,0 +1,16 @@
+{
+    "name": "car1983-web",
+    "version": "1.0.0",
+    "private": true,
+    "packageManager": "pnpm@9.15.4",
+    "scripts": {
+        "build": "turbo run build",
+        "dev": "turbo run dev",
+        "lint": "eslint .",
+        "typecheck": "turbo run typecheck"
+    },
+    "devDependencies": {
+        "turbo": "^2.5.4",
+        "typescript": "^5.8.3"
+    }
+}

@@ -1,0 +1,9 @@
+{
+  "extends": "@car1983/config/tsconfig",
+  "compilerOptions": {
+    "outDir": "dist",
+    "paths": {}
+  },
+  "include": ["src"],
+  "exclude": ["node_modules", "dist"]
+}
