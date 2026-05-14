@@ -13,9 +13,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Car 1983 – Taxi Services in CT, NY, NJ & TX",
+  title: "Car 1983 – Taxi Services",
   description:
-    "Car 1983 offers premium taxi and ride services across CT, NY, NJ & TX. Book your ride instantly on the App Store or Google Play.",
+    "Car 1983 offers premium taxi and ride services. Book your ride instantly on the App Store or Google Play.",
 };
 
 export default function RootLayout({

@@ -24,6 +24,12 @@ import {
   PartyPopper,
   ArrowRight,
   Phone,
+  AlertTriangle,
+  CreditCard,
+  TrendingUp,
+  Layers,
+  Wifi,
+  BadgeCheck,
 } from "lucide-react";
 
 // ─── Shared Download Button ───────────────────────────────────────────────────
@@ -148,13 +154,13 @@ function Hero() {
           {/* Left */}
           <div>
             <h1 className="text-6xl sm:text-7xl lg:text-8xl font-black text-black leading-[0.88] tracking-tight mb-8">
-              Car 1983 Taxi Services in CT, NY, NJ &amp; TX.
+              Car 1983 Taxi Services
             </h1>
             <p className="text-lg font-bold text-black mb-2">
-              &ldquo;Savor the journey, Satisfy your cravings&rdquo;
+              &ldquo;Your ride, your tier — always on time.&rdquo;
             </p>
             <p className="text-base text-gray-600 leading-relaxed">
-              Indulge in culinary delights, while we drive you to your destination in style!
+              Five vehicle tiers, real-time GPS matching, built-in SOS safety, and Stripe-secured payments — all in one app.
             </p>
           </div>
 
@@ -172,38 +178,28 @@ function Hero() {
                 margin: "auto",
               }}
             />
-            {/* Main ride card */}
+            {/* Main ride card — tier selector */}
             <div className="absolute right-0 top-0 w-80 bg-white rounded-3xl shadow-2xl border border-gray-100 p-5">
-              <div className="flex gap-2 mb-4">
-                {["Complete Ride", "Pending Ride", "Cancel Ride"].map((tab) => (
-                  <span
-                    key={tab}
-                    className="flex-1 text-center text-[10px] font-medium text-gray-500 bg-gray-50 rounded-full py-1.5 px-1"
-                  >
-                    {tab} →
-                  </span>
-                ))}
-              </div>
-              <h3 className="font-bold text-gray-900 mb-3">Upcoming Ride</h3>
+              <p className="text-xs font-semibold text-gray-400 mb-3 uppercase tracking-wide">Choose your tier</p>
               <div className="space-y-2">
                 {[
-                  { name: "Johnson Smithkover", rating: 4.5, price: "$256", date: "15 Dec'23" },
-                  { name: "Michael Chen", rating: 4.8, price: "$122", date: "18 Dec'23" },
-                ].map((r) => (
+                  { tier: "ECONOMY", emoji: "🚗", eta: "3 min", price: "$7.50" },
+                  { tier: "COMFORT",  emoji: "🚙", eta: "4 min", price: "$12.00" },
+                  { tier: "XL",       emoji: "🚐", eta: "6 min", price: "$15.50" },
+                  { tier: "LUXURY",   emoji: "🚘", eta: "8 min", price: "$26.00" },
+                ].map((r, i) => (
                   <div
-                    key={r.name}
-                    className="flex items-center justify-between bg-gray-50 rounded-xl p-3"
+                    key={r.tier}
+                    className={`flex items-center justify-between rounded-xl p-3 ${i === 1 ? "bg-[#CCFF33]" : "bg-gray-50"}`}
                   >
                     <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 rounded-full bg-amber-200 flex items-center justify-center text-xs font-bold text-amber-700">
-                        {r.name[0]}
-                      </div>
+                      <span className="text-xl">{r.emoji}</span>
                       <div>
-                        <p className="text-xs font-semibold text-gray-900">{r.name}</p>
-                        <p className="text-xs text-amber-500">★ {r.rating}</p>
+                        <p className="text-xs font-bold text-gray-900">{r.tier}</p>
+                        <p className="text-xs text-gray-500">{r.eta} away</p>
                       </div>
                     </div>
-                    <span className="text-sm font-bold text-green-600">{r.price}</span>
+                    <span className="text-sm font-bold text-gray-900">{r.price}</span>
                   </div>
                 ))}
               </div>
@@ -216,10 +212,13 @@ function Hero() {
                 </div>
                 <div>
                   <p className="text-sm font-bold text-gray-900">Willie Tanner</p>
-                  <p className="text-xs text-amber-500">★ 4.8 (127)</p>
+                  <p className="text-xs text-amber-500">★ 4.8 (127 trips)</p>
                 </div>
               </div>
-              <p className="text-xs text-gray-400 mb-2">30 Dec&apos;23 at 10:15 AM</p>
+              <div className="flex items-center gap-1.5 mb-2">
+                <BadgeCheck className="w-3.5 h-3.5 text-green-500 flex-shrink-0" />
+                <p className="text-xs text-green-600 font-semibold">Verified Driver</p>
+              </div>
               <div className="space-y-1">
                 <div className="flex items-center gap-1.5">
                   <div className="w-2 h-2 rounded-full bg-black flex-shrink-0" />
@@ -231,13 +230,16 @@ function Hero() {
                 </div>
               </div>
             </div>
-            {/* Vehicle card */}
+            {/* SOS safety card */}
             <div className="absolute right-4 bottom-4 w-44 bg-white rounded-2xl shadow-xl border border-gray-100 p-4">
-              <Car className="w-14 h-10 text-teal-500 mb-2" />
-              <p className="text-sm font-bold text-gray-900">Sedan</p>
+              <div className="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center mb-2">
+                <AlertTriangle className="w-5 h-5 text-red-500" />
+              </div>
+              <p className="text-sm font-bold text-gray-900">SOS Safety</p>
               <ul className="text-xs text-gray-500 space-y-0.5 mt-1">
-                <li>• 5:42pm</li>
-                <li>• 2 min away</li>
+                <li>• One-tap alert</li>
+                <li>• Live GPS sent</li>
+                <li>• 24/7 ops team</li>
               </ul>
             </div>
           </div>
@@ -289,40 +291,40 @@ function Hero() {
 const FEATURE_CARDS = [
   {
     bg: "#FFE89C",
-    icon: Shield,
-    title: "Peace of Mind",
-    desc: "Dependable service that ensures a stress-free travel experience.",
+    icon: AlertTriangle,
+    title: "Built-in SOS Safety",
+    desc: "One-tap PANIC or SILENT SOS alert with live GPS location sent to emergency contacts and our ops team — for riders and drivers.",
   },
   {
     bg: "#C5C3F2",
     icon: Zap,
-    title: "Personalized Attention",
-    desc: "Tailored services to meet your specific needs and preferences.",
+    title: "Smart Real-Time Matching",
+    desc: "H3-based geospatial matching finds the nearest verified driver in seconds, with live traffic-aware ETA before you confirm.",
   },
   {
     bg: "#B8F0D8",
-    icon: Heart,
-    title: "Comfort",
-    desc: "Relax in well-maintained vehicles with all the amenities you need.",
+    icon: Layers,
+    title: "5 Vehicle Tiers",
+    desc: "Choose from Economy, Comfort, XL, Luxury, or Moto — each tier priced transparently with no surge surprises.",
   },
 ];
 
 const TRANSPORT_CHECKS = [
   {
-    title: "Personalized Service",
-    desc: "We understand that transportation needs are unique. Whether for business, leisure, or special events, we provide tailored services for a seamless experience, from airport transfers to corporate travel.",
+    title: "Verified Professional Drivers",
+    desc: "Every driver completes a rigorous onboarding process — document verification, vehicle inspection, and background checks — before they can accept a single ride.",
   },
   {
-    title: "Effortless Travel",
-    desc: "Enjoy a smooth journey with our easy booking process and reliable service. We handle the details, ensuring you have a comfortable and stress-free experience.",
+    title: "Traffic-Aware ETA & Routing",
+    desc: "Our real-time routing engine factors live traffic conditions into every ETA, so the time you see when booking is the time you'll actually wait.",
   },
 ];
 
 const EXCEPTIONAL_SERVICES = [
-  { icon: Plane, label: "Airport Transfers: Reliable pickups and drop-offs." },
-  { icon: Building2, label: "Corporate Travel: Efficient services for meetings and events." },
-  { icon: Zap, label: "Leisure Outings: Comfortable and hassle-free." },
-  { icon: PartyPopper, label: "Special Events: Custom solutions for celebrations." },
+  { icon: Plane, label: "Airport Transfers: Scheduled pickups that track your flight." },
+  { icon: Building2, label: "Corporate Travel: Expense-friendly rides for meetings and events." },
+  { icon: CreditCard, label: "Cashless Payments: Stripe-secured cards, stored securely in-app." },
+  { icon: PartyPopper, label: "Special Events: XL & Luxury tiers for celebrations and groups." },
 ];
 
 function Discover() {
@@ -330,12 +332,12 @@ function Discover() {
     <section className="py-24 bg-white">
       <div className="max-w-7xl mx-auto px-5 sm:px-8">
         <h2 className="text-5xl sm:text-6xl font-black text-black leading-tight tracking-tight mb-4">
-          Discover Effortless Rides
+          Discover Smarter Rides
           <br />
           with a Tap
         </h2>
         <p className="text-lg text-gray-500 mb-16">
-          We understand that transportation needs are diverse and unique.
+          Real-time matching, verified drivers, and five tiers of vehicles — all in one app.
         </p>
 
         {/* Feature cards */}
@@ -374,10 +376,10 @@ function Discover() {
           {/* Exceptional Services */}
           <div>
             <h3 className="text-4xl font-black text-black leading-tight mb-4">
-              Exceptional Transportation Services with Car 1983
+              Built for Every Kind of Journey
             </h3>
             <p className="text-gray-500 mb-6">
-              Effortless travel with our tailored solutions for all your needs.
+              Whether it&apos;s a quick commute or a black-car airport run, Car 1983 has the right tier.
             </p>
             <div className="space-y-4 mb-8">
               {EXCEPTIONAL_SERVICES.map((s) => (
@@ -387,12 +389,19 @@ function Discover() {
                 </div>
               ))}
             </div>
-            {/* App image placeholder */}
-            <div className="rounded-3xl bg-gray-50 border border-gray-100 p-6 flex items-center justify-center h-44">
-              <div className="text-center">
-                <Car className="w-14 h-14 text-gray-300 mx-auto mb-2" />
-                <p className="text-sm text-gray-400 font-semibold">Car 1983 App</p>
-              </div>
+            {/* App stats mini-grid */}
+            <div className="rounded-3xl bg-gray-50 border border-gray-100 p-6 grid grid-cols-2 gap-4">
+              {[
+                { label: "Vehicle Tiers", value: "5" },
+                { label: "States Covered", value: "4" },
+                { label: "Avg. Match Time", value: "<30s" },
+                { label: "SOS Response", value: "24/7" },
+              ].map((s) => (
+                <div key={s.label} className="text-center">
+                  <p className="text-2xl font-black text-black">{s.value}</p>
+                  <p className="text-xs text-gray-500 mt-0.5">{s.label}</p>
+                </div>
+              ))}
             </div>
           </div>
         </div>
@@ -404,34 +413,34 @@ function Discover() {
 // ─── App Features ─────────────────────────────────────────────────────────────
 const APP_FEATURES = [
   {
-    icon: Clock,
-    title: "Reliable Rides Anytime",
-    desc: "Count on us for dependable transportation at any hour. Enjoy peace of mind with our always-on-time service.",
+    icon: AlertTriangle,
+    title: "SOS Emergency Button",
+    desc: "Tap once for a PANIC or SILENT alert. Your GPS location and trip details go to your emergency contacts and our 24/7 operations team instantly.",
   },
   {
     icon: Zap,
-    title: "Instant Booking",
-    desc: "Book your ride in seconds with our user-friendly app. Enjoy fast and seamless booking without any hassle.",
+    title: "Instant Smart Matching",
+    desc: "Our geospatial engine matches you with the nearest available driver in your chosen tier in seconds — no waiting, no guessing.",
   },
   {
     icon: Navigation,
-    title: "No Hassle Navigation",
-    desc: "Navigate effortlessly with our intuitive app. Enjoy a smooth and stress-free experience every time you travel.",
+    title: "Real-Time GPS Tracking",
+    desc: "Watch your driver approach on a live map. Share your trip link with friends and family so they always know where you are.",
   },
   {
     icon: MessageSquare,
-    title: "Clear Communication",
-    desc: "Stay informed with real-time updates and clear communication. Know your driver's status and arrival time with ease.",
+    title: "In-App Trip Updates",
+    desc: "Push notifications, SMS, and email keep you informed at every step — driver accepted, arrived, trip started, and completed.",
   },
   {
-    icon: MapPin,
-    title: "Add Frequent Stops",
-    desc: "Customize your ride with multiple stops. Conveniently manage your route and make your journey as efficient as possible.",
+    icon: CreditCard,
+    title: "Saved Payment Methods",
+    desc: "Store up to 5 Stripe-secured cards, set a default, and pay in one tap. Every transaction is encrypted end-to-end.",
   },
   {
-    icon: SlidersHorizontal,
-    title: "Flexible Options",
-    desc: "Enjoy a range of ride options tailored to your needs. Choose from economy to premium services for a perfect travel experience.",
+    icon: BadgeCheck,
+    title: "Dispute & Rating System",
+    desc: "Rate your driver after every trip and file a dispute in-app if something goes wrong. Our ops team reviews and resolves within 24 hours.",
   },
 ];
 
@@ -455,6 +464,95 @@ function AppFeatures() {
                 <h4 className="font-black text-black text-lg mb-1">{f.title}</h4>
                 <p className="text-gray-600 text-sm leading-relaxed">{f.desc}</p>
               </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ─── Vehicle Tiers ────────────────────────────────────────────────────────────
+const VEHICLE_TIERS = [
+  {
+    tier: "MOTO",
+    emoji: "🛵",
+    bg: "#F3F4F6",
+    badge: "Fastest",
+    badgeBg: "#CCFF33",
+    desc: "Beat traffic on a motorcycle. Best for solo riders covering short distances.",
+    from: "$4",
+  },
+  {
+    tier: "ECONOMY",
+    emoji: "🚗",
+    bg: "#EFF6FF",
+    badge: "Best Value",
+    badgeBg: "#BFDBFE",
+    desc: "Everyday sedans and hatchbacks. Clean, reliable, and easy on your wallet.",
+    from: "$7",
+  },
+  {
+    tier: "COMFORT",
+    emoji: "🚙",
+    bg: "#F0FDF4",
+    badge: "Popular",
+    badgeBg: "#BBF7D0",
+    desc: "Newer cars with extra legroom. Ideal for airport runs or a longer commute.",
+    from: "$11",
+  },
+  {
+    tier: "XL",
+    emoji: "🚐",
+    bg: "#FFF7ED",
+    badge: "Groups",
+    badgeBg: "#FED7AA",
+    desc: "SUVs and minivans seating up to 6. Perfect for families or group outings.",
+    from: "$15",
+  },
+  {
+    tier: "LUXURY",
+    emoji: "🚘",
+    bg: "#FDF4FF",
+    badge: "Premium",
+    badgeBg: "#E9D5FF",
+    desc: "Top-tier sedans and SUVs with professional chauffeurs for special occasions.",
+    from: "$25",
+  },
+];
+
+function VehicleTiers() {
+  return (
+    <section className="py-24 bg-black text-white">
+      <div className="max-w-7xl mx-auto px-5 sm:px-8">
+        <h2 className="text-5xl sm:text-6xl font-black text-white leading-tight tracking-tight mb-4">
+          Five Tiers. One App.
+        </h2>
+        <p className="text-gray-400 text-lg mb-14 max-w-xl">
+          From a quick moto zip to a luxury SUV — every tier is priced clearly upfront with no hidden fees.
+        </p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+          {VEHICLE_TIERS.map((v) => (
+            <div
+              key={v.tier}
+              className="rounded-3xl p-6 flex flex-col gap-3"
+              style={{ backgroundColor: v.bg }}
+            >
+              <div className="flex items-center justify-between">
+                <span className="text-4xl">{v.emoji}</span>
+                <span
+                  className="text-xs font-bold px-3 py-1 rounded-full"
+                  style={{ backgroundColor: v.badgeBg, color: "#000" }}
+                >
+                  {v.badge}
+                </span>
+              </div>
+              <p className="font-black text-black text-xl tracking-tight">{v.tier}</p>
+              <p className="text-gray-600 text-xs leading-relaxed flex-1">{v.desc}</p>
+              <p className="text-black font-black text-lg">
+                from {v.from}
+                <span className="text-gray-500 font-normal text-sm"> / ride</span>
+              </p>
             </div>
           ))}
         </div>
@@ -759,8 +857,7 @@ export default function Home() {
       <main>
         <Hero />
         <Discover />
-        <AppFeatures />
-        <Testimonials />
+        <AppFeatures />        <VehicleTiers />        <Testimonials />
         <Blog />
         <CTA />
       </main>
