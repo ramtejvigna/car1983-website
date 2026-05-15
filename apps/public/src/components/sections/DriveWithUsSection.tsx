@@ -11,7 +11,7 @@ const PERKS = [
 
 export function DriveWithUsSection() {
   return (
-    <section className="py-28 bg-gradient-to-br from-[#795BFB] to-[#5e3edb] overflow-hidden" aria-label="Drive with us">
+    <section className="relative py-16 sm:py-28 bg-gradient-to-br from-[#795BFB] to-[#5e3edb] overflow-hidden" aria-label="Drive with us">
       <div className="max-w-7xl mx-auto px-5 sm:px-8">
 
         {/* Background decoration */}
@@ -28,7 +28,7 @@ export function DriveWithUsSection() {
             <span className="inline-block text-[11px] font-bold text-white/60 border border-white/25 px-3.5 py-1.5 rounded-full tracking-widest uppercase mb-5">
               For Drivers
             </span>
-            <h2 className="text-5xl sm:text-6xl font-black text-white leading-[0.92] tracking-tight mb-5">
+            <h2 className="text-3xl sm:text-5xl lg:text-6xl font-black text-white leading-[0.92] tracking-tight mb-5">
               Earn on your
               <br />
               schedule.

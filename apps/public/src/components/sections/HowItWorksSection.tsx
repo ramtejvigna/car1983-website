@@ -20,7 +20,7 @@ const STEPS = [
 
 export function HowItWorksSection() {
   return (
-    <section className="py-28 bg-white" aria-label="How it works">
+    <section className="py-16 sm:py-28 bg-white" aria-label="How it works">
       <div className="max-w-7xl mx-auto px-5 sm:px-8">
         <div className="grid lg:grid-cols-[1fr_2fr] gap-16 items-start">
 
@@ -29,7 +29,7 @@ export function HowItWorksSection() {
             <span className="inline-block text-[11px] font-bold text-white bg-[#795BFB] px-3.5 py-1.5 rounded-full tracking-widest uppercase mb-5">
               How It Works
             </span>
-            <h2 className="text-5xl sm:text-6xl font-black text-black leading-[0.92] tracking-tight">
+            <h2 className="text-3xl sm:text-5xl lg:text-6xl font-black text-black leading-[0.92] tracking-tight">
               Three steps to your
               <br />
               <span className="text-[#795BFB]">perfect ride.</span>
@@ -44,7 +44,7 @@ export function HowItWorksSection() {
             {STEPS.map((s, i) => (
               <ScrollReveal key={s.n} delay={i * 120} direction="left">
                 <div
-                  className={`relative flex gap-7 items-start p-8 rounded-3xl overflow-hidden transition-all duration-300 hover:scale-[1.01] ${
+                  className={`relative flex gap-4 sm:gap-7 items-start p-5 sm:p-8 rounded-3xl overflow-hidden transition-all duration-300 hover:scale-[1.01] ${
                     i === 1
                       ? "bg-black shadow-[0_20px_60px_rgba(0,0,0,0.15)]"
                       : "bg-gray-50 hover:bg-gray-100/70 hover:shadow-md"
@@ -61,7 +61,7 @@ export function HowItWorksSection() {
 
                   {/* Step number */}
                   <span
-                    className={`text-6xl font-black leading-none flex-shrink-0 select-none ${
+                    className={`text-5xl sm:text-6xl font-black leading-none flex-shrink-0 select-none ${
                       i === 1 ? "text-[#795BFB]" : "text-gray-150"
                     }`}
                     style={{ color: i === 1 ? "#795BFB" : "rgba(0,0,0,0.08)" }}

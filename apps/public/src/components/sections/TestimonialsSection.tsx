@@ -51,14 +51,14 @@ export function TestimonialsSection() {
   }
 
   return (
-    <section className="py-28 bg-white" aria-label="Customer testimonials">
+    <section className="py-16 sm:py-28 bg-white" aria-label="Customer testimonials">
       <div className="max-w-5xl mx-auto px-5 sm:px-8">
 
         <div className="text-center mb-16">
           <span className="inline-block text-[11px] font-bold text-white bg-[#795BFB] px-3.5 py-1.5 rounded-full tracking-widest uppercase mb-5">
             Testimonials
           </span>
-          <h2 className="text-5xl sm:text-6xl font-black text-black leading-[0.92] tracking-tight">
+          <h2 className="text-3xl sm:text-5xl lg:text-6xl font-black text-black leading-[0.92] tracking-tight">
             Riders love{" "}
             <span className="text-[#795BFB]">Car 1983.</span>
           </h2>

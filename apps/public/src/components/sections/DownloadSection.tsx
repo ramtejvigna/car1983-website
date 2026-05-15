@@ -4,7 +4,7 @@ import { StoreButton } from "@/components/ui/StoreButtons";
 
 export function DownloadSection() {
   return (
-    <section id="download" className="py-28 bg-black" aria-label="Download the app">
+    <section id="download" className="relative py-16 sm:py-28 bg-black overflow-hidden" aria-label="Download the app">
       <div className="max-w-5xl mx-auto px-5 sm:px-8 text-center">
 
         {/* Ambient glow */}
@@ -15,7 +15,7 @@ export function DownloadSection() {
 
         <div className="relative">
 
-          <h2 className="text-5xl sm:text-7xl font-black text-white leading-[0.9] tracking-tight mb-5">
+          <h2 className="text-3xl sm:text-5xl lg:text-7xl font-black text-white leading-[0.9] tracking-tight mb-5">
             Ready to ride?
           </h2>
           <p className="text-white/40 text-base max-w-sm mx-auto mb-12 leading-relaxed">

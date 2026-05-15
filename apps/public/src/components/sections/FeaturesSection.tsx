@@ -11,13 +11,13 @@ const FEATURES: { icon: LucideIcon; title: string; desc: string }[] = [
 
 export function FeaturesSection() {
   return (
-    <section className="py-28 bg-[#fafafa] border-t border-gray-100" aria-label="App features">
+    <section className="py-16 sm:py-28 bg-[#fafafa] border-t border-gray-100" aria-label="App features">
       <div className="max-w-7xl mx-auto px-5 sm:px-8">
         <ScrollReveal className="text-center mb-16">
           <span className="inline-block text-[11px] font-bold text-white bg-[#795BFB] px-3.5 py-1.5 rounded-full tracking-widest uppercase mb-5">
             App Features
           </span>
-          <h2 className="text-5xl sm:text-6xl font-black text-black leading-[0.92] tracking-tight">
+          <h2 className="text-3xl sm:text-5xl lg:text-6xl font-black text-black leading-[0.92] tracking-tight">
             Everything you need,
             <br />
             <span className="text-[#795BFB]">nothing you don&apos;t.</span>

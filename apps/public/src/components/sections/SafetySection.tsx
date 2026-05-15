@@ -13,20 +13,17 @@ const FEATURES: { icon: LucideIcon; title: string; desc: string }[] = [
 
 export function SafetySection() {
   return (
-    <section className="py-28 bg-[#080808]" aria-label="Safety features">
+    <section className="py-16 sm:py-28 bg-[#080808]" aria-label="Safety features">
       <div className="max-w-7xl mx-auto px-5 sm:px-8">
 
         <div className="grid lg:grid-cols-[1fr_2fr] gap-16 items-start">
 
           {/* Sticky left */}
           <ScrollReveal className="lg:sticky lg:top-28">
-            <div className="w-12 h-12 rounded-2xl bg-[#795BFB]/12 border border-[#795BFB]/20 flex items-center justify-center mb-6">
-              <Shield className="w-6 h-6 text-[#795BFB]" />
-            </div>
             <span className="inline-block text-[11px] font-bold text-white/40 border border-white/12 px-3 py-1.5 rounded-full tracking-widest uppercase mb-5">
               Safety First
             </span>
-            <h2 className="text-5xl sm:text-6xl font-black text-white leading-[0.92] tracking-tight">
+            <h2 className="text-3xl sm:text-5xl lg:text-6xl font-black text-white leading-[0.92] tracking-tight">
               Built for trust.
               <br />
               <span className="text-[#795BFB]">Designed for</span>

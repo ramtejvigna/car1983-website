@@ -36,7 +36,7 @@ function TierCard({
         onMouseMove={onMove}
         onMouseLeave={onLeave}
         style={{ transition: "transform 0.3s ease" }}
-        className={`relative rounded-3xl p-7 border cursor-pointer overflow-hidden group ${
+        className={`relative rounded-3xl p-5 sm:p-7 border cursor-pointer overflow-hidden group ${
           dark
             ? "bg-[#0f0f0f] border-white/8 hover:border-[#795BFB]/35"
             : "bg-[#f5f5f5] border-transparent hover:border-[#795BFB]/25 hover:shadow-lg"
@@ -78,13 +78,13 @@ function TierCard({
 
 export function VehicleTiersSection() {
   return (
-    <section className="py-28 bg-black" aria-label="Vehicle tiers">
+    <section className="py-16 sm:py-28 bg-black" aria-label="Vehicle tiers">
       <div className="max-w-7xl mx-auto px-5 sm:px-8">
         <ScrollReveal className="text-center mb-16">
           <span className="inline-block text-[11px] font-bold text-white/50 border border-white/12 px-3.5 py-1.5 rounded-full tracking-widest uppercase mb-5">
             Vehicle Tiers
           </span>
-          <h2 className="text-5xl sm:text-6xl font-black text-white leading-[0.92] tracking-tight">
+          <h2 className="text-3xl sm:text-5xl lg:text-6xl font-black text-white leading-[0.92] tracking-tight">
             Five Tiers.{" "}
             <span className="text-[#795BFB]">One App.</span>
           </h2>

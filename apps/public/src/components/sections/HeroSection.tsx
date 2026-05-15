@@ -36,36 +36,22 @@ export function HeroSection() {
           {/* ── Left: Copy ─────────────────────────────────────────── */}
           <div>
 
-            {/* Live badge */}
-            <div
-              className="inline-flex items-center gap-3 border border-white/12 bg-white/[0.04] backdrop-blur-sm rounded-full px-4 py-2 mb-10 animate-fade-up"
-              style={{ animationDelay: "50ms" }}
-            >
-              <div className="relative flex items-center justify-center w-2.5 h-2.5">
-                <span className="w-2 h-2 rounded-full bg-[#00BB39] block" />
-                <span className="absolute w-2 h-2 rounded-full bg-[#00BB39] animate-pulse-ring" />
-              </div>
-              <span className="text-[11px] font-semibold text-white/55 tracking-[0.15em] uppercase">
-                Est. 1983 · Now Digital
-              </span>
-            </div>
-
             {/* Headline */}
             <h1
-              className="text-[clamp(52px,8vw,90px)] font-black text-white leading-[0.87] tracking-tight animate-fade-up"
+              className="text-[clamp(36px,9vw,90px)] font-black text-white leading-[0.87] tracking-tight animate-fade-up"
               style={{ animationDelay: "150ms" }}
             >
               Every Ride,
             </h1>
             <h1
-              className="text-[clamp(52px,8vw,90px)] font-black text-[#795BFB] leading-[0.87] tracking-tight mb-8 animate-fade-up"
+              className="text-[clamp(36px,9vw,90px)] font-black text-[#795BFB] leading-[0.87] tracking-tight mb-8 animate-fade-up"
               style={{ animationDelay: "260ms" }}
             >
               Elevated.
             </h1>
 
             <p
-              className="text-[17px] text-white/45 leading-relaxed mb-10 max-w-[400px] animate-fade-up"
+              className="text-base text-white/45 leading-relaxed mb-10 max-w-[400px] animate-fade-up"
               style={{ animationDelay: "370ms" }}
             >
               Five vehicle tiers, real-time GPS matching, built-in SOS safety, and
