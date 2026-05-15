@@ -13,7 +13,7 @@ applications:
           commands:
             - pnpm turbo build --filter=@car1983/public
       artifacts:
-        baseDirectory: apps/public/.next
+        baseDirectory: .next
         files:
           - '**/*'
       cache:
@@ -38,7 +38,7 @@ applications:
           commands:
             - pnpm turbo build --filter=@car1983/admin
       artifacts:
-        baseDirectory: apps/admin/.next
+        baseDirectory: .next
         files:
           - '**/*'
       cache:
