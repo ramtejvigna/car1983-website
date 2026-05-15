@@ -1,0 +1,24 @@
+version: 1
+frontend:
+  phases:
+    preBuild:
+      commands:
+        - nvm use 20
+        - corepack enable
+        - corepack prepare pnpm@9.15.4 --activate
+        - pnpm install --frozen-lockfile
+    build:
+      commands:
+        - pnpm turbo build --filter=@car1983/public
+  artifacts:
+    baseDirectory: .next
+    files:
+      - '**/*'
+  cache:
+    paths:
+      - node_modules/**/*
+      - apps/public/node_modules/**/*
+      - apps/public/.next/cache/**/*
+      - packages/ui/node_modules/**/*
+      - packages/types/node_modules/**/*
+      - packages/utils/node_modules/**/*
