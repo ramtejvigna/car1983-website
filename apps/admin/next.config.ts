@@ -20,7 +20,7 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
-  transpilePackages: ["@car1983/ui", "@car1983/types", "@car1983/utils"],
+  transpilePackages: ["@car1983/ui", "@car1983/types", "@car1983/utils", "react-leaflet"],
   poweredByHeader: false,
   compress: true,
   async headers() {

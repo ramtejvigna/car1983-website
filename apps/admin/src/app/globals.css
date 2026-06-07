@@ -2,6 +2,34 @@
 @import "@car1983/ui/globals.css";
 
 @theme inline {
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* Fonts */
+  --font-sans: var(--font-manrope);
+  --font-heading: var(--font-sora);
+
+  /* Brand palette → bg-brand-*, text-brand-*, border-brand-* */
+  --color-brand-violet: #8a63f6;
+  --color-brand-blue: #26a0df;
+  --color-brand-green: #19b86b;
+  --color-brand-amber: #f2af2f;
+  --color-brand-red: #ff5f58;
 }
+
+/*
+  SVG presentation attributes (stroke, stroke-dasharray, fill: url()) cannot be
+  expressed as Tailwind utilities — these 6 rules are the only justified custom CSS.
+*/
+.chart-grid-line  { stroke: #e8eaf2; stroke-width: 1; stroke-dasharray: 4 4; }
+.chart-line       { fill: none; stroke-width: 3; stroke-linecap: round; }
+.chart-line-violet { stroke: #8a63f6; }
+.chart-line-blue   { stroke: #26a0df; }
+.chart-area-violet { fill: url(#revenueFill); }
+.chart-area-blue   { fill: url(#ridesFill); }
+
+/* Pulse animation for active ride map pins — cannot be a Tailwind utility */
+@keyframes ridepin-pulse {
+  0%   { transform: scale(1);   opacity: 0.7; }
+  100% { transform: scale(2.4); opacity: 0;   }
+}
+.map-road { fill: none; stroke: #ffffff; stroke-width: 18; stroke-linecap: round; filter: drop-shadow(0 1px 0 #d8e3f0); }
+.map-road-primary { stroke-width: 24; }
+.map-road-secondary { stroke-width: 14; stroke: #f8fbff; }
