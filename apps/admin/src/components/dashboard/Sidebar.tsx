@@ -4,8 +4,13 @@ import { useState } from "react";
 import { NAV_ITEMS } from "./data";
 import { Icon } from "./Icon";
 
-export function Sidebar() {
-  const [activeItem, setActiveItem] = useState("Dashboard");
+export function Sidebar({
+  activeItem,
+  onSelect,
+}: {
+  activeItem: string;
+  onSelect: (item: string) => void;
+}) {
   const [openGroups, setOpenGroups] = useState<Record<string, boolean>>(() =>
     NAV_ITEMS.reduce<Record<string, boolean>>((acc, item) => {
       if (item.children) {
@@ -48,7 +53,7 @@ export function Sidebar() {
                 aria-label={label}
                 aria-expanded={children ? isOpen : undefined}
                 onClick={() => {
-                  setActiveItem(label);
+                  onSelect(label);
 
                   if (children) {
                     toggleGroup(label);
@@ -91,7 +96,7 @@ export function Sidebar() {
                         key={child.label}
                         type="button"
                         title={child.label}
-                        onClick={() => setActiveItem(childKey)}
+                        onClick={() => onSelect(childKey)}
                         className={[
                           "cursor-pointer w-full rounded-2xl px-4 py-2.5 text-left text-[15px] font-semibold whitespace-nowrap transition-colors",
                           isChildActive && child.emphasis === "strong"

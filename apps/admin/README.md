@@ -1,5 +1,15 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+## Environment
+
+Create `.env.local` in this app with:
+
+```bash
+ADMIN_SERVICE_URL=http://localhost:3004
+```
+
+`ADMIN_SERVICE_URL` is used by the admin user-management API proxy under `/api/admin/users/*`.
+
 ## Getting Started
 
 First, run the development server:
