@@ -1,4 +1,4 @@
-# Car 1983 ó Frontend Monorepo
+# Car 1983 ù Frontend Monorepo
 
 Frontend monorepo for **Car 1983**, a premium taxi and ride service operating across CT, NY, NJ & TX. Managed with [Turborepo](https://turbo.build) and [pnpm workspaces](https://pnpm.io/workspaces).
 
@@ -9,13 +9,13 @@ Frontend monorepo for **Car 1983**, a premium taxi and ride service operating ac
 ```
 car1983-website/
 +-- apps/
-¶   +-- public/          # Public marketing website (Next.js)
-¶   +-- admin/           # Internal admin dashboard (Next.js)
+ù   +-- public/          # Public marketing website (Next.js)
+ù   +-- admin/           # Internal admin dashboard (Next.js)
 +-- packages/
-¶   +-- ui/              # Shared component library (@car1983/ui)
-¶   +-- types/           # Shared TypeScript types (@car1983/types)
-¶   +-- utils/           # Shared utility functions (@car1983/utils)
-¶   +-- config/          # Shared ESLint + TypeScript config (@car1983/config)
+ù   +-- ui/              # Shared component library (@car1983/ui)
+ù   +-- types/           # Shared TypeScript types (@car1983/types)
+ù   +-- utils/           # Shared utility functions (@car1983/utils)
+ù   +-- config/          # Shared ESLint + TypeScript config (@car1983/config)
 +-- package.json         # Root workspace scripts
 +-- pnpm-workspace.yaml  # pnpm workspace definition
 +-- turbo.json           # Turborepo pipeline config
@@ -25,17 +25,17 @@ car1983-website/
 
 ## Apps
 
-### `apps/public` ó Public Website
+### `apps/public` ù Public Website
 Marketing site served to end users. Includes the homepage with download CTAs, feature sections, testimonials, blog, and footer.
 
-- URL (dev): http://localhost:3000
-- Stack: Next.js 16.2.6 ∑ React 19 ∑ Tailwind CSS v4 ∑ App Router ∑ Turbopack
+- URL (dev): http://localhost:8080
+- Stack: Next.js 16.2.6 ù React 19 ù Tailwind CSS v4 ù App Router ù Turbopack
 
-### `apps/admin` ó Admin Dashboard
+### `apps/admin` ù Admin Dashboard
 Internal tool for managing rides, drivers, and riders.
 
-- URL (dev): http://localhost:3001
-- Stack: Next.js 16.2.6 ∑ React 19 ∑ Tailwind CSS v4 ∑ App Router ∑ Turbopack
+- URL (dev): http://localhost:8081
+- Stack: Next.js 16.2.6 ù React 19 ù Tailwind CSS v4 ù App Router ù Turbopack
 
 ---
 
@@ -155,7 +155,7 @@ Each app is deployed independently on [Vercel](https://vercel.com):
 
 ## Notes
 
-- `packages/` are all `"private": true` ó they are never published to npm
+- `packages/` are all `"private": true` ù they are never published to npm
 - Turborepo caches build outputs in `.next/` and `dist/` per package
 - `pnpm-workspace.yaml` includes both `apps/*` and `packages/*`
 - TypeScript path aliases (`@car1983/ui`, `@car1983/types`, `@car1983/utils`) are configured in each app's `tsconfig.json`

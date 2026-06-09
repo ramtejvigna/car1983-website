@@ -1,4 +1,5 @@
 import { Icon } from "./Icon";
+import type { IconName } from "./types";
 
 export function PanelHeader({
   title,
@@ -7,7 +8,7 @@ export function PanelHeader({
 }: {
   title: string;
   subtitle: string;
-  icon?: "award" | "pin";
+  icon?: IconName;
 }) {
   return (
     <div className="px-7 py-6 border-b border-[#e6e8ef]">

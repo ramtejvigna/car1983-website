@@ -50,7 +50,7 @@ pnpm turbo run dev --filter=@car1983/public
 pnpm turbo run build --filter=@car1983/public
 ```
 
-The dev server starts at [http://localhost:3000](http://localhost:3000) (or the next available port).
+The dev server starts at [http://localhost:8080](http://localhost:8080).
 
 ## Shared Packages
 

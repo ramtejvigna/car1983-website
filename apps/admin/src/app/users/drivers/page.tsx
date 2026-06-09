@@ -1,12 +1,12 @@
 "use client";
 
 import { AuthenticatedLayout } from "@/components/dashboard/AuthenticatedLayout";
-import { UserManagementPanel } from "@/components/dashboard/UserManagementPanel";
+import { DriverManagementPanel } from "@/components/dashboard/DriverManagementPanel";
 
 export default function DriversPage() {
   return (
     <AuthenticatedLayout>
-      <UserManagementPanel roleHint="DRIVER" />
+      <DriverManagementPanel />
     </AuthenticatedLayout>
   );
 }
