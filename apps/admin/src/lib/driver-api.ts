@@ -47,3 +47,22 @@ export async function rejectDriver(driverId: string, token: string, reason: stri
 export async function assignDriverVerification(verificationId: string, token: string) {
   return adminFetch(`/api/admin/drivers/verification/${verificationId}/assign`, token, { method: "POST" });
 }
+
+export type DriverDocumentType = "license" | "insurance" | "registration" | "background";
+export type DriverDocumentReviewStatus = "APPROVED" | "REJECTED" | "NEEDS_CLARIFICATION";
+
+export async function reviewDriverDocument(
+  verificationId: string,
+  token: string,
+  payload: {
+    documentType: DriverDocumentType;
+    status: DriverDocumentReviewStatus;
+    notes?: string;
+  },
+) {
+  return adminFetch(`/api/admin/drivers/verification/${verificationId}/document`, token, {
+    method: "PATCH",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+}

@@ -5,10 +5,13 @@ import { useAuth } from "@/lib/AuthContext";
 import {
   approveDriver as approveDriverApi,
   assignDriverVerification,
+  type DriverDocumentReviewStatus,
+  type DriverDocumentType,
   fetchDriverAccount,
   fetchDriverProfile,
   fetchDriverStats,
   rejectDriver as rejectDriverApi,
+  reviewDriverDocument,
 } from "@/lib/driver-api";
 import { Icon } from "./Icon";
 import { PanelHeader } from "./PanelHeader";
@@ -20,6 +23,10 @@ import {
   adminFetch,
   formatDate,
   getInitials,
+  getDriverRegistrationStatus,
+  isDriverRegistrationApproved,
+  isDriverRegistrationPending,
+  isDriverRegistrationRejected,
   onboardingChipClass,
   parseUserListResponse,
   statusChipClass,
@@ -28,7 +35,21 @@ import {
 type DriverActionModalState =
   | { type: "approve"; driverId: string }
   | { type: "reject"; driverId: string }
-  | { type: "block"; user: UserListItem };
+  | { type: "block"; user: UserListItem }
+  | {
+      type: "review-document";
+      verificationId: string;
+      documentType: DriverDocumentType;
+      documentLabel: string;
+      decision: DriverDocumentReviewStatus;
+    };
+
+const DOCUMENT_TAB_LABELS: Record<DriverDocumentType, string> = {
+  license: "License",
+  registration: "Vehicle registration",
+  insurance: "Insurance",
+  background: "Background check",
+};
 
 type DriverDetails = {
   id: string;
@@ -295,12 +316,29 @@ export function DriverManagementPanel() {
     if (!actionModal || !hasToken) return;
 
     setActionBusyUserId(
-      actionModal.type === "block" ? actionModal.user.id : actionModal.driverId,
+      actionModal.type === "block"
+        ? actionModal.user.id
+        : actionModal.type === "review-document"
+          ? actionModal.verificationId
+          : actionModal.driverId,
     );
     setError(null);
 
     try {
-      if (actionModal.type === "approve") {
+      if (actionModal.type === "review-document") {
+        if (
+          (actionModal.decision === "REJECTED" || actionModal.decision === "NEEDS_CLARIFICATION") &&
+          !actionNotes.trim()
+        ) {
+          setError("A reason is required for this document decision.");
+          return;
+        }
+        await reviewDriverDocument(actionModal.verificationId, token, {
+          documentType: actionModal.documentType,
+          status: actionModal.decision,
+          notes: actionNotes.trim() || undefined,
+        });
+      } else if (actionModal.type === "approve") {
         await approveDriverApi(actionModal.driverId, token, actionNotes.trim());
       } else if (actionModal.type === "reject") {
         if (!actionNotes.trim()) {
@@ -368,6 +406,11 @@ export function DriverManagementPanel() {
     const driverProfile = viewingDriver.driverProfile;
     const driverStats = viewingDriver.driverStats;
     const verification = viewingDriver.verification;
+    const registrationStatus = getDriverRegistrationStatus({
+      registrationStatus: driverProfile?.statusInfo?.registrationStatus,
+      driverRegistrationStatus: viewingDriver.driverRegistrationStatus,
+      verificationStatus: verification?.status,
+    });
     const displayName = driverProfile?.personalInfo?.fullName || viewingDriver.fullName || "Unnamed Driver";
     const profilePhoto = driverProfile?.personalInfo?.profilePhoto;
 
@@ -407,8 +450,8 @@ export function DriverManagementPanel() {
                 <span className={`inline-flex rounded-full border px-2.5 py-0.5 text-xs font-semibold ${statusChipClass(viewingDriver.status)}`}>
                   {viewingDriver.status}
                 </span>
-                <span className={`inline-flex rounded-full border px-2.5 py-0.5 text-xs font-semibold ${onboardingChipClass(viewingDriver.driverRegistrationStatus || verification?.status)}`}>
-                  {viewingDriver.driverRegistrationStatus || verification?.status || "NOT_STARTED"}
+                <span className={`inline-flex rounded-full border px-2.5 py-0.5 text-xs font-semibold ${onboardingChipClass(registrationStatus)}`}>
+                  {registrationStatus}
                 </span>
               </div>
               <p className="text-sm text-[#59617a] mt-0.5 truncate">
@@ -489,14 +532,8 @@ export function DriverManagementPanel() {
               <div className="flex flex-wrap items-center gap-x-4 gap-y-2 mt-2 text-sm text-[#59617a]">
                 <div>
                   Status:{" "}
-                  <span className={[
-                    "font-semibold uppercase tracking-wider text-xs px-2 py-0.5 rounded-full border",
-                    (verification?.status === "APPROVED" || viewingDriver.driverRegistrationStatus === "APPROVED" || viewingDriver.driverRegistrationStatus === "COMPLETED") ? "bg-emerald-50 text-emerald-700 border-emerald-200" :
-                    (verification?.status === "REJECTED" || viewingDriver.driverRegistrationStatus === "REJECTED") ? "bg-red-50 text-red-700 border-red-200" :
-                    (verification?.status === "IN_REVIEW" || verification?.status === "PENDING_REVIEW" || viewingDriver.driverRegistrationStatus === "PENDING_APPROVAL" || viewingDriver.driverRegistrationStatus === "IN_PROGRESS") ? "bg-amber-50 text-amber-700 border-amber-200" :
-                    "bg-slate-50 text-slate-700 border-slate-200"
-                  ].join(" ")}>
-                    {viewingDriver.driverRegistrationStatus || verification?.status || "NOT_STARTED"}
+                  <span className={`font-semibold uppercase tracking-wider text-xs px-2 py-0.5 rounded-full border ${onboardingChipClass(registrationStatus)}`}>
+                    {registrationStatus}
                   </span>
                 </div>
                 <div>
@@ -524,7 +561,7 @@ export function DriverManagementPanel() {
                   Assign to Me
                 </button>
               )}
-              {verification?.status !== "APPROVED" && viewingDriver.driverRegistrationStatus !== "APPROVED" && (
+              {!isDriverRegistrationApproved(registrationStatus) && (
                 <button
                   type="button"
                   onClick={() => openActionModal({ type: "approve", driverId: viewingDriver.id })}
@@ -533,7 +570,7 @@ export function DriverManagementPanel() {
                   Approve Driver
                 </button>
               )}
-              {verification?.status !== "REJECTED" && viewingDriver.driverRegistrationStatus !== "REJECTED" && (
+              {!isDriverRegistrationRejected(registrationStatus) && (
                 <button
                   type="button"
                   onClick={() => openActionModal({ type: "reject", driverId: viewingDriver.id })}
@@ -692,6 +729,28 @@ export function DriverManagementPanel() {
                   driverProfile={driverProfile}
                   verification={verification}
                   activeTab={documentTab}
+                  reviewBusy={isBusy}
+                  onReviewDocument={(documentType, decision) => {
+                    if (!verification) return;
+                    const label = DOCUMENT_TAB_LABELS[documentType];
+                    if (decision === "APPROVED") {
+                      openActionModal({
+                        type: "review-document",
+                        verificationId: verification.id,
+                        documentType,
+                        documentLabel: label,
+                        decision,
+                      });
+                      return;
+                    }
+                    openActionModal({
+                      type: "review-document",
+                      verificationId: verification.id,
+                      documentType,
+                      documentLabel: label,
+                      decision,
+                    });
+                  }}
                 />
               ) : (
                 <div className="rounded-2xl border border-dashed border-[#eaebf2] p-8 text-center bg-white">
@@ -713,11 +772,12 @@ export function DriverManagementPanel() {
     total: data.total,
     active: data.items.filter((d) => d.status === "ACTIVE").length,
     pending: data.items.filter((d) => {
-      const onboarding = (d.driverRegistrationStatus || "").toUpperCase();
-      return (
-        d.status === "PENDING_VERIFICATION" ||
-        ["PENDING_APPROVAL", "IN_PROGRESS", "PENDING_REVIEW", "IN_REVIEW", "NEEDS_RESUBMISSION"].includes(onboarding)
-      );
+      const onboarding = getDriverRegistrationStatus({
+        registrationStatus:
+          selectedDriver?.id === d.id ? selectedDriver.driverProfile?.statusInfo?.registrationStatus : null,
+        driverRegistrationStatus: d.driverRegistrationStatus,
+      });
+      return d.status === "PENDING_VERIFICATION" || isDriverRegistrationPending(onboarding);
     }).length,
     suspended: data.items.filter((d) => d.status === "SUSPENDED").length,
   };
@@ -836,6 +896,13 @@ export function DriverManagementPanel() {
                       const isSuspended = driver.status === "SUSPENDED";
                       const canUpdateStatus = driver.status !== "DELETED";
                       const isSelected = selectedDriver?.id === driver.id;
+                      const listRegistrationStatus = getDriverRegistrationStatus({
+                        registrationStatus:
+                          selectedDriver?.id === driver.id
+                            ? selectedDriver.driverProfile?.statusInfo?.registrationStatus
+                            : null,
+                        driverRegistrationStatus: driver.driverRegistrationStatus,
+                      });
 
                       return (
                         <tr
@@ -863,8 +930,8 @@ export function DriverManagementPanel() {
                             </div>
                           </td>
                           <td className="px-4 py-3">
-                            <span className={`inline-flex rounded-full border px-2.5 py-1 text-xs font-semibold ${onboardingChipClass(driver.driverRegistrationStatus)}`}>
-                              {driver.driverRegistrationStatus || "NOT_STARTED"}
+                            <span className={`inline-flex rounded-full border px-2.5 py-1 text-xs font-semibold ${onboardingChipClass(listRegistrationStatus)}`}>
+                              {listRegistrationStatus}
                             </span>
                           </td>
                           <td className="px-4 py-3">
@@ -968,8 +1035,20 @@ export function DriverManagementPanel() {
                   <span className={`inline-flex rounded-full border px-2.5 py-1 text-xs font-semibold ${statusChipClass(selectedDriver.status)}`}>
                     {selectedDriver.status}
                   </span>
-                  <span className={`inline-flex rounded-full border px-2.5 py-1 text-xs font-semibold ${onboardingChipClass(selectedDriver.driverRegistrationStatus)}`}>
-                    {selectedDriver.driverRegistrationStatus || "NOT_STARTED"}
+                  <span
+                    className={`inline-flex rounded-full border px-2.5 py-1 text-xs font-semibold ${onboardingChipClass(
+                      getDriverRegistrationStatus({
+                        registrationStatus: selectedDriver.driverProfile?.statusInfo?.registrationStatus,
+                        driverRegistrationStatus: selectedDriver.driverRegistrationStatus,
+                        verificationStatus: selectedDriver.verification?.status,
+                      }),
+                    )}`}
+                  >
+                    {getDriverRegistrationStatus({
+                      registrationStatus: selectedDriver.driverProfile?.statusInfo?.registrationStatus,
+                      driverRegistrationStatus: selectedDriver.driverRegistrationStatus,
+                      verificationStatus: selectedDriver.verification?.status,
+                    })}
                   </span>
                 </div>
                 {selectedDriver.driverStats ? (
@@ -1079,22 +1158,38 @@ function DriverMetricCard({
   );
 }
 
-function DriverActionModal({
-  modal,
-  notes,
-  busy,
-  onNotesChange,
-  onCancel,
-  onConfirm,
-}: {
-  modal: DriverActionModalState;
-  notes: string;
-  busy: boolean;
-  onNotesChange: (value: string) => void;
-  onCancel: () => void;
-  onConfirm: () => void;
-}) {
-  const config = {
+function getDriverActionModalConfig(modal: DriverActionModalState) {
+  if (modal.type === "review-document") {
+    const decisionCopy = {
+      APPROVED: {
+        title: `Approve ${modal.documentLabel}`,
+        description: "Optional notes will be stored with this document review.",
+        confirmLabel: "Approve document",
+        confirmClass: "bg-emerald-600 hover:bg-emerald-700",
+        required: false,
+        placeholder: "Optional approval notes…",
+      },
+      REJECTED: {
+        title: `Reject ${modal.documentLabel}`,
+        description: "Explain what is wrong with this document.",
+        confirmLabel: "Reject document",
+        confirmClass: "bg-red-600 hover:bg-red-700",
+        required: true,
+        placeholder: "Reason for rejection…",
+      },
+      NEEDS_CLARIFICATION: {
+        title: `Request clarification — ${modal.documentLabel}`,
+        description: "Tell the driver what needs to be corrected or resubmitted.",
+        confirmLabel: "Request clarification",
+        confirmClass: "bg-amber-500 hover:bg-amber-600",
+        required: true,
+        placeholder: "Clarification request…",
+      },
+    }[modal.decision];
+    return decisionCopy;
+  }
+
+  return {
     approve: {
       title: "Approve driver",
       description: "Optional notes will be recorded with this approval.",
@@ -1120,6 +1215,24 @@ function DriverActionModal({
       placeholder: "Reason for blocking…",
     },
   }[modal.type];
+}
+
+function DriverActionModal({
+  modal,
+  notes,
+  busy,
+  onNotesChange,
+  onCancel,
+  onConfirm,
+}: {
+  modal: DriverActionModalState;
+  notes: string;
+  busy: boolean;
+  onNotesChange: (value: string) => void;
+  onCancel: () => void;
+  onConfirm: () => void;
+}) {
+  const config = getDriverActionModalConfig(modal);
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-[2px]">
@@ -1208,20 +1321,65 @@ function DriverDocuments({
   driverProfile,
   verification,
   activeTab,
+  onReviewDocument,
+  reviewBusy,
 }: {
   driverProfile: NonNullable<DriverDetails["driverProfile"]>;
   verification: DriverDetails["verification"];
   activeTab: "license" | "vehicle" | "insurance" | "background";
+  onReviewDocument: (documentType: DriverDocumentType, decision: DriverDocumentReviewStatus) => void;
+  reviewBusy: boolean;
 }) {
+  const documentTypeByTab: Record<typeof activeTab, DriverDocumentType> = {
+    license: "license",
+    vehicle: "registration",
+    insurance: "insurance",
+    background: "background",
+  };
+  const currentDocumentType = documentTypeByTab[activeTab];
+  const currentDocumentStatus =
+    activeTab === "license"
+      ? verification?.licenseStatus
+      : activeTab === "vehicle"
+        ? verification?.registrationStatus
+        : activeTab === "insurance"
+          ? verification?.insuranceStatus
+          : verification?.backgroundStatus;
+  const currentDocumentNotes =
+    activeTab === "license"
+      ? verification?.licenseNotes
+      : activeTab === "vehicle"
+        ? verification?.registrationNotes
+        : activeTab === "insurance"
+          ? verification?.insuranceNotes
+          : verification?.backgroundNotes;
+
+  const reviewActions = verification ? (
+    <DocumentReviewActions
+      documentStatus={currentDocumentStatus}
+      reviewBusy={reviewBusy}
+      canReview={verification.status !== "APPROVED" && verification.status !== "REJECTED"}
+      onApprove={() => onReviewDocument(currentDocumentType, "APPROVED")}
+      onReject={() => onReviewDocument(currentDocumentType, "REJECTED")}
+      onClarify={() => onReviewDocument(currentDocumentType, "NEEDS_CLARIFICATION")}
+    />
+  ) : null;
+
   if (activeTab === "vehicle") {
     return (
       <div className="rounded-2xl border border-[#eaebf2] p-5 bg-white space-y-4 shadow-sm">
-        <div className="flex items-center justify-between border-b border-[#f0f1f6] pb-3">
+        <div className="flex flex-col gap-3 border-b border-[#f0f1f6] pb-3 sm:flex-row sm:items-center sm:justify-between">
           <h4 className="font-bold text-[#1e2330] text-base">Vehicle Registration & Details</h4>
           <span className={`text-xs px-2.5 py-1 rounded-full font-semibold border ${verificationStatusClass(verification?.registrationStatus)}`}>
             {verification?.registrationStatus || "PENDING"}
           </span>
         </div>
+        {reviewActions}
+        {currentDocumentNotes ? (
+          <p className="text-sm text-[#59617a] rounded-xl border border-amber-100 bg-amber-50/60 px-3 py-2">
+            <span className="font-semibold text-amber-800">Reviewer notes:</span> {currentDocumentNotes}
+          </p>
+        ) : null}
         {driverProfile.vehicleRegistration ? (
           <div className="space-y-4">
             <dl className="grid grid-cols-2 md:grid-cols-3 gap-3 text-sm bg-[#fafbff] p-3 rounded-xl border border-[#f0f1f6]">
@@ -1267,12 +1425,18 @@ function DriverDocuments({
   if (activeTab === "insurance") {
     return (
       <div className="rounded-2xl border border-[#eaebf2] p-5 bg-white space-y-4 shadow-sm">
-        <div className="flex items-center justify-between border-b border-[#f0f1f6] pb-3">
+        <div className="flex flex-col gap-3 border-b border-[#f0f1f6] pb-3 sm:flex-row sm:items-center sm:justify-between">
           <h4 className="font-bold text-[#1e2330] text-base">Insurance Policy Certificate</h4>
           <span className={`text-xs px-2.5 py-1 rounded-full font-semibold border ${verificationStatusClass(verification?.insuranceStatus)}`}>
             {verification?.insuranceStatus || "PENDING"}
           </span>
         </div>
+        {reviewActions}
+        {currentDocumentNotes ? (
+          <p className="text-sm text-[#59617a] rounded-xl border border-amber-100 bg-amber-50/60 px-3 py-2">
+            <span className="font-semibold text-amber-800">Reviewer notes:</span> {currentDocumentNotes}
+          </p>
+        ) : null}
         {driverProfile.insuranceDocs ? (
           <div className="grid grid-cols-1 md:grid-cols-[1.5fr_1fr] gap-4">
             <dl className="grid grid-cols-1 gap-3 text-sm bg-[#fafbff] p-3 rounded-xl border border-[#f0f1f6]">
@@ -1311,12 +1475,18 @@ function DriverDocuments({
   if (activeTab === "background") {
     return (
       <div className="rounded-2xl border border-[#eaebf2] p-5 bg-white space-y-4 shadow-sm">
-        <div className="flex items-center justify-between border-b border-[#f0f1f6] pb-3">
+        <div className="flex flex-col gap-3 border-b border-[#f0f1f6] pb-3 sm:flex-row sm:items-center sm:justify-between">
           <h4 className="font-bold text-[#1e2330] text-base">Background Check & Tax Information</h4>
           <span className={`text-xs px-2.5 py-1 rounded-full font-semibold border ${verificationStatusClass(verification?.backgroundStatus)}`}>
             {verification?.backgroundStatus || "PENDING"}
           </span>
         </div>
+        {reviewActions}
+        {currentDocumentNotes ? (
+          <p className="text-sm text-[#59617a] rounded-xl border border-amber-100 bg-amber-50/60 px-3 py-2">
+            <span className="font-semibold text-amber-800">Reviewer notes:</span> {currentDocumentNotes}
+          </p>
+        ) : null}
         {driverProfile.taxInfo || driverProfile.backgroundCheck ? (
           <dl className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm bg-[#fafbff] p-3 rounded-xl border border-[#f0f1f6]">
             {driverProfile.taxInfo ? (
@@ -1361,12 +1531,18 @@ function DriverDocuments({
   return (
     <div className="space-y-6">
       <div className="rounded-2xl border border-[#eaebf2] p-5 bg-white space-y-4 shadow-sm">
-        <div className="flex items-center justify-between border-b border-[#f0f1f6] pb-3">
+        <div className="flex flex-col gap-3 border-b border-[#f0f1f6] pb-3 sm:flex-row sm:items-center sm:justify-between">
           <h4 className="font-bold text-[#1e2330] text-base">Driver&apos;s License</h4>
           <span className={`text-xs px-2.5 py-1 rounded-full font-semibold border ${verificationStatusClass(verification?.licenseStatus)}`}>
             {verification?.licenseStatus || "PENDING"}
           </span>
         </div>
+        {reviewActions}
+        {currentDocumentNotes ? (
+          <p className="text-sm text-[#59617a] rounded-xl border border-amber-100 bg-amber-50/60 px-3 py-2">
+            <span className="font-semibold text-amber-800">Reviewer notes:</span> {currentDocumentNotes}
+          </p>
+        ) : null}
         {driverProfile.driversLicense ? (
           <div className="space-y-4">
             <dl className="grid grid-cols-2 gap-4 text-sm bg-[#fafbff] p-3 rounded-xl border border-[#f0f1f6]">
@@ -1390,6 +1566,55 @@ function DriverDocuments({
           <p className="text-sm text-[#6d7385]">No driver&apos;s license uploaded yet.</p>
         )}
       </div>
+    </div>
+  );
+}
+
+function DocumentReviewActions({
+  documentStatus,
+  reviewBusy,
+  canReview,
+  onApprove,
+  onReject,
+  onClarify,
+}: {
+  documentStatus?: string;
+  reviewBusy: boolean;
+  canReview: boolean;
+  onApprove: () => void;
+  onReject: () => void;
+  onClarify: () => void;
+}) {
+  if (!canReview) {
+    return null;
+  }
+
+  return (
+    <div className="flex flex-wrap items-center gap-2">
+      <button
+        type="button"
+        disabled={reviewBusy || documentStatus === "APPROVED"}
+        onClick={onApprove}
+        className="h-9 px-3 rounded-xl bg-emerald-600 text-white text-xs font-semibold hover:bg-emerald-700 disabled:opacity-50 cursor-pointer"
+      >
+        Approve
+      </button>
+      <button
+        type="button"
+        disabled={reviewBusy}
+        onClick={onClarify}
+        className="h-9 px-3 rounded-xl bg-amber-500 text-white text-xs font-semibold hover:bg-amber-600 disabled:opacity-50 cursor-pointer"
+      >
+        Needs clarification
+      </button>
+      <button
+        type="button"
+        disabled={reviewBusy}
+        onClick={onReject}
+        className="h-9 px-3 rounded-xl bg-red-600 text-white text-xs font-semibold hover:bg-red-700 disabled:opacity-50 cursor-pointer"
+      >
+        Reject
+      </button>
     </div>
   );
 }

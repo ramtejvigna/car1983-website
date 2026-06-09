@@ -51,6 +51,43 @@ export function statusChipClass(status: AccountStatus) {
   return "bg-slate-50 text-slate-700 border-slate-200";
 }
 
+export function getDriverRegistrationStatus(input: {
+  registrationStatus?: string | null;
+  driverRegistrationStatus?: string | null;
+  verificationStatus?: string | null;
+}): string {
+  if (input.registrationStatus) {
+    return input.registrationStatus;
+  }
+  if (input.driverRegistrationStatus) {
+    return input.driverRegistrationStatus;
+  }
+  if (input.verificationStatus) {
+    return input.verificationStatus;
+  }
+  return "NOT_STARTED";
+}
+
+export function isDriverRegistrationApproved(status: string) {
+  const normalized = status.toUpperCase();
+  return normalized === "APPROVED" || normalized === "COMPLETED";
+}
+
+export function isDriverRegistrationRejected(status: string) {
+  return status.toUpperCase() === "REJECTED";
+}
+
+export function isDriverRegistrationPending(status: string) {
+  const normalized = status.toUpperCase();
+  return (
+    normalized === "PENDING_APPROVAL" ||
+    normalized === "PENDING_REVIEW" ||
+    normalized === "IN_REVIEW" ||
+    normalized === "IN_PROGRESS" ||
+    normalized === "NEEDS_RESUBMISSION"
+  );
+}
+
 export function onboardingChipClass(status?: string | null) {
   const normalized = (status || "NOT_STARTED").toUpperCase();
   if (normalized === "APPROVED" || normalized === "COMPLETED") {
