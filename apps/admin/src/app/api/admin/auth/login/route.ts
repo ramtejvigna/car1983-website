@@ -27,6 +27,13 @@ export async function POST(request: NextRequest) {
     );
 
     if (response.status !== 200) {
+      try {
+        const errData = await response.clone().json();
+        console.error("Login API proxy error:", response.status, errData);
+      } catch {
+        const errText = await response.clone().text();
+        console.error("Login API proxy error:", response.status, errText);
+      }
       return response;
     }
 
