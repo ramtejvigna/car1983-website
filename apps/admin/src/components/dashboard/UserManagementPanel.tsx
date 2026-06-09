@@ -180,9 +180,7 @@ export function UserManagementPanel({ roleHint = "ALL" }: { roleHint?: RoleFilte
   const [actionBusyUserId, setActionBusyUserId] = useState<string | null>(null);
 
   useEffect(() => {
-    if (sessionToken) {
-      setToken(sessionToken);
-    }
+    setToken(sessionToken || "");
   }, [sessionToken]);
 
   useEffect(() => {
@@ -199,7 +197,7 @@ export function UserManagementPanel({ roleHint = "ALL" }: { roleHint?: RoleFilte
     return () => window.clearTimeout(timer);
   }, [searchInput]);
 
-  const hasToken = token.trim().length > 0;
+  const hasToken = (token || "").trim().length > 0;
 
   async function fetchUsers() {
     if (!hasToken) {
@@ -1096,14 +1094,14 @@ export function UserManagementPanel({ roleHint = "ALL" }: { roleHint?: RoleFilte
                         Loading users...
                       </td>
                     </tr>
-                  ) : data.items.length === 0 ? (
+                  ) : (data?.items || []).length === 0 ? (
                     <tr>
                       <td className="px-4 py-5 text-[#697189]" colSpan={5}>
                         No users found for the current filters.
                       </td>
                     </tr>
                   ) : (
-                    data.items.map((user) => {
+                    (data?.items || []).map((user) => {
                       const isBusy = actionBusyUserId === user.id;
                       const isSuspended = user.status === "SUSPENDED";
                       const canUpdateStatus = user.status !== "DELETED";
